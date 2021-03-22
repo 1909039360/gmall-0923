@@ -11,6 +11,7 @@ import com.atguigu.gmall.pms.vo.SpuVo;
 import com.atguigu.gmall.sms.vo.SkuSaleVo;
 import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -53,6 +54,8 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, SpuEntity> implements
 
     @Autowired
     private GmallSmsClient smsClient;
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
     @Override
     public PageResultVo queryPage(PageParamVo paramVo) {
@@ -70,14 +73,14 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, SpuEntity> implements
         QueryWrapper<SpuEntity> wrapper = new QueryWrapper<>();
 
         // 判断cid是否为0，如果不为0 根据分类查询
-        if (cid != 0){
+        if (cid != 0) {
             wrapper.eq("category_id", cid);
         }
 
         // 获取查询关键字
         String key = paramVo.getKey();
         // 如果关键字不为空，拼接查询条件
-        if (StringUtils.isNotBlank(key)){
+        if (StringUtils.isNotBlank(key)) {
             // and后需要小括号，所以此处使用了and（Consumer）
             wrapper.and(t -> t.eq("id", key).or().like("name", key));
         }
@@ -116,11 +119,12 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, SpuEntity> implements
         saveSkuInfo(spu, spuId);
 
         //int i = 1/0;
+        this.rabbitTemplate.convertAndSend("PMS_ITEM_)EXCHANGE","item.insert",spuId);
     }
 
     private void saveSkuInfo(SpuVo spu, Long spuId) {
         List<SkuVo> skus = spu.getSkus();
-        if (CollectionUtils.isEmpty(skus)){
+        if (CollectionUtils.isEmpty(skus)) {
             return;
         }
         skus.forEach(skuVo -> {
@@ -131,14 +135,14 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, SpuEntity> implements
             skuVo.setBrandId(spu.getBrandId());
             // 设置sku的默认图片：取第一张图片
             List<String> images = skuVo.getImages();
-            if (!CollectionUtils.isEmpty(images)){
+            if (!CollectionUtils.isEmpty(images)) {
                 skuVo.setDefaultImage(StringUtils.isNotBlank(skuVo.getDefaultImage()) ? skuVo.getDefaultImage() : images.get(0));
             }
             this.skuMapper.insert(skuVo);
             Long skuId = skuVo.getId();
 
             //  2.2. 保存pms_sku_images
-            if (!CollectionUtils.isEmpty(images)){
+            if (!CollectionUtils.isEmpty(images)) {
                 this.imagesService.saveBatch(images.stream().map(image -> {
                     SkuImagesEntity imagesEntity = new SkuImagesEntity();
                     imagesEntity.setSkuId(skuId);
@@ -172,7 +176,6 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, SpuEntity> implements
             }).collect(Collectors.toList()));
         }
     }
-
 
 
     private Long saveSpuInfo(SpuVo spu) {

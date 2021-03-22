@@ -16,13 +16,20 @@ public interface GmallPmsApi {
     @GetMapping("pms/sku/spu/{spuId}")
     public ResponseVo<List<SkuEntity>> querySkusBySpuId(@PathVariable("spuId")Long spuId);
 
+    @GetMapping("pms/spu/{id}")
+    public ResponseVo<SpuEntity> querySpuById(@PathVariable("id") Long id);
+
     @GetMapping("pms/brand/{id}")
     public ResponseVo<BrandEntity> queryBrandById(@PathVariable("id") Long id);
 
     @GetMapping("pms/category/{id}")
     public ResponseVo<CategoryEntity> queryCategoryById(@PathVariable("id") Long id);
 
-    @GetMapping("pms/skuattrvalue/category/{cid}")
+    @GetMapping("pms/category/parent/{parentId}")
+    public ResponseVo<List<CategoryEntity>> queryCategoriesByPid(@PathVariable("parentId")Long pid);
+    @GetMapping("pms/category/cates/{pid}")
+    public ResponseVo<List<CategoryEntity>>queryLvl2CatesWithSubsByPid(@PathVariable("pid")Long pid);
+        @GetMapping("pms/skuattrvalue/category/{cid}")
     public ResponseVo<List<SkuAttrValueEntity>> querySearchAttrValuesBySkuId(
             @PathVariable("cid")Long cid,
             @RequestParam("skuId")Long skuId

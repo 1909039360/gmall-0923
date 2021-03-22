@@ -95,7 +95,7 @@ public class SearchService {
                 //获取桶中的子集合
                 Map<String, Aggregation> brandSubMap = ((Terms.Bucket) bucket).getAggregations().asMap();
                 //解析出品牌名称
-                ParsedLongTerms brandNameAgg = (ParsedLongTerms) brandSubMap.get("brandNameAgg");
+                ParsedStringTerms brandNameAgg = (ParsedStringTerms) brandSubMap.get("brandNameAgg");
                 List<? extends Terms.Bucket> nameAggBuckets = brandNameAgg.getBuckets();
                 if (!CollectionUtils.isEmpty(nameAggBuckets)) {
                     brandEntity.setName(nameAggBuckets.get(0).getKeyAsString());
