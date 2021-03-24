@@ -23,6 +23,11 @@
             <artifactId>redisson</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>22.0</version>
+        </dependency>
+        <dependency>
             <groupId>com.atguigu</groupId>
             <artifactId>gmall-pms-interface</artifactId>
             <version>0.0.1-SNAPSHOT</version>

@@ -9,6 +9,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.redisson.api.RBloomFilter;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,9 @@ public class GmallCacheAspect {
     @Autowired
     private RedissonClient redissonClient;
 
+    @Autowired
+    private RBloomFilter bloomFilter;
+
     //    @Before("execution(* com.atguigu.gmall.index.service.*.*(..))")
     @Around("@annotation(GmallCache)")
 //    @AfterReturning
@@ -44,6 +48,10 @@ public class GmallCacheAspect {
         List<Object> args = Arrays.asList(joinPoint.getArgs());
         //获取目标方法的参数列表
         String key = prefix + args;
+        //通过bloomFilter判断数据是否存在
+        if (!this.bloomFilter.contains(key)) {
+            return null;
+        }
         //查询缓存，缓存命中返回
         String json = this.redisTemplate.opsForValue().get(key);
         if (StringUtils.isNotBlank(json)) {
