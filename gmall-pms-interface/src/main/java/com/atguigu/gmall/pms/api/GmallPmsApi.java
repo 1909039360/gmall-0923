@@ -52,7 +52,7 @@ public interface GmallPmsApi {
             @RequestParam("spuId") Long spuId
     );
 
-    @GetMapping("pms/skuattrvalue/{spuId}")
+    @GetMapping("pms/spudesc/{spuId}")
     public ResponseVo<SpuDescEntity> querySpuDescById(@PathVariable("spuId") Long spuId);
 
     @GetMapping("pms/skuimages/sku/{skuId}")

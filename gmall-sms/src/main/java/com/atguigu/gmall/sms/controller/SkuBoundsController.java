@@ -36,7 +36,7 @@ public class SkuBoundsController {
     @Autowired
     private SkuBoundsService skuBoundsService;
 
-    @GetMapping
+    @GetMapping("sales/{skuId}")
     public ResponseVo<List<ItemSaleVo>> querySalesBySkuId(@PathVariable("skuId") Long skuId) {
         List<ItemSaleVo> itemSaleVos = this.skuBoundsService.querySalesBySkuId(skuId);
         return ResponseVo.ok(itemSaleVos);
