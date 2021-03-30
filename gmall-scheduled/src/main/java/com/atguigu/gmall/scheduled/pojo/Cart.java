@@ -1,4 +1,4 @@
-package com.atguigu.gmall.cart.pojo;
+package com.atguigu.gmall.scheduled.pojo;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -25,6 +25,8 @@ public class Cart {
     private String saleAttrs; // 销售属性：List<SkuAttrValueEntity>的json格式
     private BigDecimal price; // 加入购物车时的价格
     private BigDecimal count;
+    @TableField(exist = false)
+    private BigDecimal currentPrice;//实时比较价格
     private Boolean store = false; // 是否有货
     private String sales; // 营销信息: List<ItemSaleVo>的json格式
 }
