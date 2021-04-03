@@ -24,6 +24,18 @@ spring:
     password: 123456
   redis:
     host: 192.168.184.128
+  rabbitmq:
+    host: 192.168.184.128
+    virtual-host: /zzy
+    username: zzy
+    password: zzy
+    listener:
+      simple:
+        prefetch: 1
+        acknowledge-mode: manual
+        concurrency: 4
+    publisher-confirm-type: correlated
+    publisher-returns: true
 feign:
   sentinel:
     enabled: true

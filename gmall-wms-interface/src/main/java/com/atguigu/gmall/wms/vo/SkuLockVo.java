@@ -4,7 +4,7 @@ import com.sun.org.apache.xpath.internal.operations.Bool;
 import lombok.Data;
 
 @Data
-public class SKuLockVo {
+public class SkuLockVo {
     private Long skuId;
     private Integer count;
 

@@ -18,4 +18,5 @@ import java.util.List;
 public interface WareSkuMapper extends BaseMapper<WareSkuEntity> {
 	public List<WareSkuEntity>check(@Param("skuId")Long skuId,@Param("count")Integer count);
     public Integer lock(@Param("id")Long id,@Param("count")Integer count);
+    public Integer unlock(@Param("id")Long id,@Param("count")Integer count);
 }
